@@ -23,6 +23,10 @@ const userSchema = new Schema<IUser>(
       required: true,
       minlength: 6,
     },
+    refreshToken: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
