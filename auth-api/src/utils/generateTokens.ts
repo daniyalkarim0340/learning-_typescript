@@ -2,18 +2,18 @@ import jwt from "jsonwebtoken";
 import { IUser } from "../types/user.types.js";
 
 export const generateAccessToken = (user: IUser): string => {
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret) throw new Error("JWT_ACCESS_SECRET is not defined");
+
   return jwt.sign(
     {
-      id: user._id,
+      id: user._id.toString(), // Safely stringified
       email: user.email,
     },
-    process.env.JWT_ACCESS_SECRET as string,
-    {
-      expiresIn: "15m",
-    }
+    secret,
+    { expiresIn: "15m" }
   );
 };
-
 export const generateRefreshToken = (user: IUser): string => {
   return jwt.sign(
     {

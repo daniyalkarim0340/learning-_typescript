@@ -9,7 +9,6 @@ const userSchema = new Schema<IUser>(
       required: true,
       trim: true,
     },
-
     email: {
       type: String,
       required: true,
@@ -17,11 +16,11 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
-
     password: {
       type: String,
       required: true,
       minlength: 6,
+      select: false, // 🔒 Excludes password from queries by default for maximum security
     },
     refreshToken: {
       type: String,
@@ -33,16 +32,15 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// 🔐 Hash password before saving
-userSchema.pre("save", async function (next) {
+// 🔐 Hash password automatically before saving
+userSchema.pre("save", async function () {
+  // Removed 'next' parameter completely. Mongoose will track the promise resolution.
   if (!this.isModified("password")) {
-    return 
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-
- 
 });
 
 // 📦 Model
