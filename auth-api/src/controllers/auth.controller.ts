@@ -87,3 +87,37 @@ export const LoginUser = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 });
+
+
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET!
+  ) as jwt.JwtPayload;
+
+  const user = await User.findById(decodedToken._id);
+
+  if (!user) {
+    throw new ApiError(401, "Invalid refresh token");
+  }
+
+  if (incomingRefreshToken !== user.refreshToken) {
+    throw new ApiError(401, "Refresh token is expired or used");
+  }
+
+  const accessToken = user.generateAccessToken();
+
+  return res.status(200).json({
+    success: true,
+    accessToken,
+    message: "Access token refreshed successfully",
+  });
+});
