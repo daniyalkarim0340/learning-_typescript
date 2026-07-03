@@ -78,6 +78,24 @@ export const updateProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
 
+    // 1. Check if the user is uploading new images during this update
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const uploadedImages = [];
+
+      // Stream the new files to Cloudinary
+      for (const file of req.files as Express.Multer.File[]) {
+        const cloudinaryResult = await uploadToCloudinary(file.buffer, 'products');
+        uploadedImages.push({
+          publicUrl: cloudinaryResult.secure_url,
+          privateUrl: cloudinaryResult.public_id
+        });
+      }
+
+      // 2. Inject the new cloud images array into req.body so Mongoose updates it
+      req.body.images = uploadedImages;
+    }
+
+    // 3. Update the document in MongoDB
     const updatedProduct = await ProductModel.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,

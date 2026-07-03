@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { createProduct, deleteProduct, getAllProducts, updateProduct } from '../controllers/product.controller.js';
+import { upload } from '../middleware/multer.js'; 
 
 const ProductRouter = Router();
 
-// This sets up a POST request. 
-// When someone sends a POST request to this route, it triggers your controller.
-ProductRouter.post('/create', createProduct);
-ProductRouter.delete('/:id', deleteProduct);
-ProductRouter.patch('/:id', updateProduct); 
-ProductRouter.get('/', getAllProducts);// Triggers our update controller
+// Pass multer middleware to BOTH create and update routes
+ProductRouter.post('/create', upload.array('images', 5), createProduct);
+ProductRouter.patch('/:id', upload.array('images', 5), updateProduct); // Fixed here!
 
+ProductRouter.delete('/:id', deleteProduct);
+ProductRouter.get('/', getAllProducts);
 
 export default ProductRouter;
