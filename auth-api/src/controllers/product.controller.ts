@@ -1,85 +1,92 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ProductModel } from '../models/product.js';
 import AppError from '../handle/appError.js';
 import asyncHandler from "express-async-handler";
+import { uploadToCloudinary } from '../config/cloudinary.js'; // Added your Cloudinary config utility
 
+// 1. CREATE PRODUCT (With Cloudinary File Upload Integration)
 export const createProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    // Extract standard text fields from the request body
     const { name, description, price, inStock, category, tags } = req.body;
 
-    // 1. Manually trigger your AppError if required fields are missing
+    // Validate required text fields
     if (!name || !price) {
       return next(new AppError('Name and price are required to create a product.', 400));
     }
 
-    // 2. Create the new product
+    // Initialize an empty array to collect uploaded image object metadata
+    const uploadedImages = [];
+
+    // Check if files were intercepted and loaded into memory by the Multer middleware
+    if (req.files && Array.isArray(req.files)) {
+      for (const file of req.files as Express.Multer.File[]) {
+        // Stream the file buffer up to Cloudinary inside a 'products' folder
+        const cloudinaryResult = await uploadToCloudinary(file.buffer, 'products');
+        
+        // Structure the output URLs to match your explicit IProduct schema design
+        uploadedImages.push({
+          publicUrl: cloudinaryResult.secure_url, // For client-side UI rendering
+          privateUrl: cloudinaryResult.public_id  // Keep track of asset IDs for future deletions
+        });
+      }
+    }
+
+    // Instantiate and populate your MongoDB document setup
     const newProduct = new ProductModel({
       name,
       description,
       price,
       inStock,
       category,
-      tags
+      tags,
+      images: uploadedImages // Assign the dynamically collected array
     });
 
-    // 3. Save it to the database
-    // If Mongoose throws an error here, the asyncHandler catches it automatically!
+    // Write validation checkpoints directly to the DB collection
     const savedProduct = await newProduct.save();
 
-    // 4. Send success response
     res.status(201).json({
       success: true,
-      message: 'Product created successfully!',
+      message: 'Product created successfully with cloud images!',
       product: savedProduct
     });
   }
 );
 
-
+// 2. DELETE PRODUCT
 export const deleteProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    // 1. Extract the ID from the URL parameters (e.g., /api/products/:id)
     const { id } = req.params;
  
-    // 2. Look for the product and delete it from the database in one shot
     const deletedProduct = await ProductModel.findByIdAndDelete(id);
 
-    // 3. If Mongoose returns null, it means that ID doesn't exist in the database
     if (!deletedProduct) {
       return next(new AppError('No product found with that ID.', 404));
     }
 
-    // 4. Send back a 200 OK success response
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
-      deletedProduct: { id: deletedProduct._id, name: deletedProduct.name } // Sending brief confirmation data
+      deletedProduct: { id: deletedProduct._id, name: deletedProduct.name }
     });
   }
 );
 
-
+// 3. UPDATE PRODUCT
 export const updateProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params;
 
-    // findByIdAndUpdate takes three arguments:
-    // 1. The ID of the item to update
-    // 2. The new data (req.body)
-    // 3. Options: 
-    //    'new: true' returns the freshly updated document instead of the old one
-    //    'runValidators: true' forces Mongoose to validate the new data against your Schema rules
     const updatedProduct = await ProductModel.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    // If no product matches the ID, trigger your custom 404 error
     if (!updatedProduct) {
       return next(new AppError('No product found with that ID.', 404));
     }
 
-    // Send back a 200 OK success response with the updated data
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',
@@ -88,18 +95,14 @@ export const updateProduct = asyncHandler(
   }
 );
 
-
-
+// 4. GET ALL PRODUCTS
 export const getAllProducts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    // 1. Fetch all documents from the products collection
-    // Passing an empty object {} to .find() tells Mongoose to get everything
     const products = await ProductModel.find({});
 
-    // 2. Send back a 200 OK success response with the data
     res.status(200).json({
       success: true,
-      count: products.length, // Useful for the frontend to know total items
+      count: products.length,
       products
     });
   }
