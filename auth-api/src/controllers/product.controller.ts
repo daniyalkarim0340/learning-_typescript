@@ -87,3 +87,20 @@ export const updateProduct = asyncHandler(
     });
   }
 );
+
+
+
+export const getAllProducts = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    // 1. Fetch all documents from the products collection
+    // Passing an empty object {} to .find() tells Mongoose to get everything
+    const products = await ProductModel.find({});
+
+    // 2. Send back a 200 OK success response with the data
+    res.status(200).json({
+      success: true,
+      count: products.length, // Useful for the frontend to know total items
+      products
+    });
+  }
+);
