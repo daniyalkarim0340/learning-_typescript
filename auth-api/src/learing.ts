@@ -4,7 +4,7 @@
 // ✅ type and interface     done
 // ✅ Union (|) & Intersection (&)      done
 // ✅ Type Aliases
-// ✅ Type Narrowing (typeof, instanceof, type guards)    half
+// ✅ Type Narrowing (typeof, instanceof, type guards)    done
 // ✅ void, never, unknown, any     done
 // ✅ keyof
 // ✅ typeof (type queries)
@@ -15,7 +15,7 @@
 // ✅ infer
 // ✅ Mapped Types
 
-import { log } from "console";
+// import { log } from "console";
 
 
 
@@ -45,19 +45,61 @@ import { log } from "console";
 // let readonlyTuple: readonly [string, number] = ["Alice", 30];
 
 // // ✅ Enums
-enum Direction {
-  Up = "UP",
-  Down = "DOWN",
-  Left = "LEFT",
-  Right = "RIGHT",
+// enum Direction {
+//   Up = "UP",
+//   Down = "DOWN",
+//   Left = "LEFT",
+//   Right = "RIGHT",
+// }
+
+
+// // ✅ Generics (<T>)
+
+// let identity = <T>(arg: T): T => {
+//   return arg;
+// }
+
+// identity<number>(42); // ✅ Returns 42
+// identity<string>("Hello"); // ✅ Returns "Hello"
+
+
+// ✅ Type Narrowing (typeof, instanceof, type guards) 
+
+// let value: string | number = "Hello";
+
+// if (typeof value === "string") {
+//   console.log("Value is a string:", value.toUpperCase());
+// } 
+
+// if (typeof value === "number") {
+//   console.log("Value is a number:", value.toFixed(2));
+// }
+
+
+function processValue(value: string | number) {
+  if (typeof value === "string") {
+    console.log("Value is a string:", value.toUpperCase());
+  } else if (typeof value === "number") {
+    console.log("Value is a number:", value.toFixed(2));
+  }
 }
-
-
-// ✅ Generics (<T>)
-
-let identity = <T>(arg: T): T => {
-  return arg;
+processValue("Hello"); // ✅ Value is a string: HELLO
+processValue(42); // ✅ Value is a number: 42.00
+class Animal {
 }
+const op=new Animal();
 
-identity<number>(42); // ✅ Returns 42
-identity<string>("Hello"); // ✅ Returns "Hello"
+class food {
+
+}
+const lt=new food()
+
+function hello(value: Animal | food) {
+  if (value instanceof Animal) {
+    console.log("Value is an instance of Animal");
+  } else if (value instanceof food) {
+    console.log("Value is an instance of food");
+  }
+}
+hello(lt)
+
