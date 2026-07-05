@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ProductModel } from '../models/product.js';
 import AppError from '../handle/appError.js';
 import asyncHandler from "express-async-handler";
-import { uploadToCloudinary } from '../config/cloudinary.js'; // Added your Cloudinary config utility
+import { uploadToCloudinary } from '../config/cloudinary.js';
 
 // 1. CREATE PRODUCT (With Cloudinary File Upload Integration)
 export const createProduct = asyncHandler(

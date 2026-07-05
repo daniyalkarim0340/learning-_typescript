@@ -157,10 +157,7 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response): Prom
     sameSite: "strict" as const,
   };
 
-  res
-    .status(200)
-    .clearCookie("accessToken", cookieOptions)
-    .clearCookie("refreshToken", cookieOptions)
+  res.status(200).clearCookie("accessToken", cookieOptions).clearCookie("refreshToken", cookieOptions)
     .json({
       success: true,
       message: "User logged out successfully",

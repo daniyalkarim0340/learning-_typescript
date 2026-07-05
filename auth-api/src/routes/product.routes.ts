@@ -11,4 +11,5 @@ ProductRouter.patch('/:id', upload.array('images', 5), updateProduct); // Fixed 
 ProductRouter.delete('/:id', deleteProduct);
 ProductRouter.get('/', getAllProducts);
 
+
 export default ProductRouter;
