@@ -3,12 +3,13 @@ import { ProductModel } from '../models/product.js';
 import AppError from '../handle/appError.js';
 import asyncHandler from "express-async-handler";
 import { uploadToCloudinary } from '../config/cloudinary.js';
+import { ProductInput } from '../zodvalidation/product.zod.js';
 
 // 1. CREATE PRODUCT (With Cloudinary File Upload Integration)
 export const createProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     // Extract standard text fields from the request body
-    const { name, description, price, inStock, category, tags } = req.body;
+    const { name, description, price, inStock, category, tags } = req.body as ProductInput;
 
     // Validate required text fields
     if (!name || !price) {
@@ -90,6 +91,7 @@ export const updateProduct = asyncHandler(
           privateUrl: cloudinaryResult.public_id
         });
       }
+      
 
       // 2. Inject the new cloud images array into req.body so Mongoose updates it
       req.body.images = uploadedImages;
