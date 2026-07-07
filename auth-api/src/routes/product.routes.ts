@@ -6,12 +6,22 @@ import { productValidation } from '../zodvalidation/product.zod.js';
 
 const ProductRouter = Router();
 
-// Pass multer middleware to BOTH create and update routes
-ProductRouter.post('/create',validate(productValidation), upload.array('images', 5), createProduct);
-ProductRouter.patch('/:id', validate(productValidation), upload.array('images', 5), updateProduct); // Fixed here!
+// ✅ FIX: Put upload FIRST so it populates req.body before validation runs
+ProductRouter.post(
+  '/create', 
+  upload.array('images', 5), 
+  validate(productValidation), 
+  createProduct
+);
+
+ProductRouter.patch(
+  '/:id', 
+  upload.array('images', 5), 
+  validate(productValidation), 
+  updateProduct
+);
 
 ProductRouter.delete('/:id', deleteProduct);
 ProductRouter.get('/', getAllProducts);
-
 
 export default ProductRouter;
