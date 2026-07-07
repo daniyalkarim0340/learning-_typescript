@@ -6,6 +6,7 @@ import User from "../models/user.model.js";
 import AppError from "../handle/appError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/generateTokens.js";
 import { setRefreshTokenCookie } from "../utils/cookies.js";
+import { LoginInput, RegisterInput } from "../zodvalidation/register.validation.js";
 
 // Custom payload matching your JWT design
 interface CustomJwtPayload extends jwt.JwtPayload {
@@ -16,7 +17,7 @@ interface CustomJwtPayload extends jwt.JwtPayload {
 // 1. USER REGISTRATION
 // ==========================================
 export const register = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { name, email, password } = req.body as RegisterInput;
 
   if (!name || !email || !password) {
     throw new AppError("All fields are required", 400);
@@ -50,7 +51,7 @@ export const register = asyncHandler(async (req: Request, res: Response): Promis
 // ==========================================
 // Renamed to camelCase for codebase uniformity
 export const loginUser = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { email, password } = req.body as LoginInput;
 
   if (!email || !password) {
     throw new AppError("All fields are required", 400);
