@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const productSchema = z
+export const productValidation = z
   .object({
     name: z
       .string()
@@ -48,4 +48,4 @@ export const productSchema = z
   })
   .strict();
 
-export type ProductInput = z.infer<typeof productSchema>;
+export type ProductInput = z.infer<typeof productValidation>;
