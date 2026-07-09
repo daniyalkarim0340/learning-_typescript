@@ -103,3 +103,11 @@ function hello(value: Animal | food) {
 }
 hello(lt)
 
+
+
+//  mapped types
+type Person = {
+  name: string;
+  age: number;
+  email: string;
+};
