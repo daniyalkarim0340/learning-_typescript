@@ -1,8 +1,8 @@
 import React, { createContext, useState, useLayoutEffect, useEffect, useCallback, ReactNode } from "react";
-import apiClient from "../api/apiClient.js";
-import { authService } from "../api/authService.js";
+import apiClient from "../api/apiClient";
+import { authService } from "../api/authService";
 // ✅ CORRECT: Explicitly marking them as types so Vite strips them safely
-import type { AuthContextType, IUser, AuthResponse } from "../api/types.js";
+import type { AuthContextType, IUser, AuthResponse } from "../api/types";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

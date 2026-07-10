@@ -1,5 +1,5 @@
-import apiClient from './apiClient.js';
-import type { IProduct, CreateProductDto, UpdateProductDto } from './types.js';
+import apiClient from './apiClient';
+import type { IProduct, CreateProductDto, UpdateProductDto } from './types';
 
 export const productService = {
   /**

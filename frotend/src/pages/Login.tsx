@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { loginSchema, LoginFormData } from "../utils/schemas";
+import type{ LoginFormData } from "../validations/schemas";
+import { loginSchema } from "../validations/schemas";
 import { useAuth } from "../hooks/useAuth";
-import { authService } from "../api/authService.js";
+import { authService } from "../api/authService";
 
 export const Login: React.FC = () => {
   const { setAccessToken, setUser } = useAuth();
