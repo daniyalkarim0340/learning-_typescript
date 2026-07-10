@@ -8,6 +8,23 @@ export interface IUser {
   updatedAt: string;
 }
 
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  user: IUser;
+  accessToken: string;
+}
+
+export interface AuthContextType {
+  accessToken: string | null;
+  user: IUser | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+  setAccessToken: (token: string | null) => void;
+  setUser: (user: IUser | null) => void;
+  logout: () => Promise<void>;
+}
+
 // Data required for User Registration
 export interface RegisterRequest {
   name: string;
