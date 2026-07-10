@@ -6,7 +6,7 @@ export const authService = {
    * Register a new user
    */
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
+    const response = await apiClient.post<AuthResponse>('/register', data);
     return response.data;
   },
 
@@ -14,7 +14,7 @@ export const authService = {
    * Login user
    */
   login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/login', data);
+    const response = await apiClient.post<AuthResponse>('/login', data);
     
     // If your backend returns a token, you can save it to localStorage here
     if (response.data.accessToken) {
@@ -25,10 +25,10 @@ export const authService = {
   },
 
   /**
-   * Get the current authenticated user profile
+   * Refresh access token
    */
-  getProfile: async (): Promise<{ success: boolean; user: IUser }> => {
-    const response = await apiClient.get<{ success: boolean; user: IUser }>('/auth/profile');
+  refreshToken: async (): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>('/refresh-token');
     return response.data;
   },
 
@@ -36,7 +36,7 @@ export const authService = {
    * Logout user and clear local data
    */
   logout: async (): Promise<{ success: boolean; message: string }> => {
-    const response = await apiClient.post<{ success: boolean; message: string }>('/auth/logout');
+    const response = await apiClient.post<{ success: boolean; message: string }>('/logout');
     localStorage.removeItem('token'); // Clean up the token
     return response.data;
   }

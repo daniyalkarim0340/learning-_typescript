@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAccessTokenState(token);
   }, []);
 
-  // ✅ useLayoutEffect registers interceptors synchronously before children render/mount
+  //  useLayoutEffect registers interceptors synchronously before children render/mount
   useLayoutEffect(() => {
     // Request Interceptor
     const requestInterceptor = apiClient.interceptors.request.use(
