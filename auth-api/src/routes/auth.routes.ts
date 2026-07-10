@@ -9,7 +9,7 @@ const Authrouter = Router();
 // Register route
 Authrouter .post("/register",validate(registerSchema), register);
 Authrouter.post("/login", validate(loginSchema), loginUser);
-Authrouter.post("/refresh-token", validate(loginSchema), refreshAccessToken);
+Authrouter.post("/refresh-token", refreshAccessToken); // No validation - uses HttpOnly cookie
 Authrouter.post("/logout",authMiddleware, logoutUser); // Add this line to handle logout
 
 export default Authrouter;

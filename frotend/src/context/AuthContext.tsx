@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           try {
             const refreshRes = await authService.refreshToken();
-            const { accessToken: newToken, user: newUser } = refreshRes.data as AuthResponse;
+            const { accessToken: newToken, user: newUser } = refreshRes as AuthResponse;
 
             setAccessToken(newToken);
             setUser(newUser);
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const restoreSession = async () => {
       try {
         const res = await authService.refreshToken();
-        const { accessToken: newToken, user: newUser } = res.data as AuthResponse;
+        const { accessToken: newToken, user: newUser } = res as AuthResponse;
         setUser(newUser);
         setAccessToken(newToken);
       } catch (error) {

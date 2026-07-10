@@ -10,6 +10,7 @@ const API_BASE_URL = 'http://localhost:7000/api';
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  withCredentials: true, // ✅ Enable sending cookies with requests
   headers: {
     'Content-Type': 'application/json',
   },
