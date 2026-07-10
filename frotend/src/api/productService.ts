@@ -23,7 +23,7 @@ export const productService = {
    * Create a new product (Admin feature)
    */
   createProduct: async (data: CreateProductDto): Promise<IProduct> => {
-    const response = await apiClient.post<IProduct>('/products', data);
+    const response = await apiClient.post<IProduct>('/products/create', data);
     return response.data;
   },
 
