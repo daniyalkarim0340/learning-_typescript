@@ -39,12 +39,12 @@ export interface LoginRequest {
 }
 
 // Standard Auth API Response structure
-export interface AuthResponse {
-  success: boolean;
-  message: string;
-  user: IUser;
-  accessToken: string; // If you pass the token in the response body
-}
+// export interface AuthResponse {
+//   success: boolean;
+//   message: string;
+//   user: IUser;
+//   accessToken: string; // If you pass the token in the response body
+// }
 
 
 // Matches the backend IProductImage interface

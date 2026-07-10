@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "./api/apiClient.js";
-import { IProduct } from "./api/types.js";
+import type { IProduct } from "./api/types.js";
 
 function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
