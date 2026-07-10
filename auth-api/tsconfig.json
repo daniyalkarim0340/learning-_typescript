@@ -22,5 +22,5 @@
     "moduleDetection": "force",
     "isolatedModules": true
   },
-  "include": ["src"]
+  "include": ["src", "../frotend/src/hooks", "../frotend/src/context"]
 }
