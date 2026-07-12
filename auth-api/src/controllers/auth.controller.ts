@@ -10,7 +10,7 @@ import { LoginInput, RegisterInput } from "../zodvalidation/register.validation.
 
 // Custom payload matching your JWT design
 interface CustomJwtPayload extends jwt.JwtPayload {
-  _id: string;
+  id: string;
 }
 
 // ==========================================
@@ -101,16 +101,21 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
 
   let decodedToken: CustomJwtPayload;
   try {
-    // Synchronous execution block to cleanly map jsonwebtoken errors into your AppError handling
+    // ◄ FIX: Use the exact variable name used during generation
+    const secret = process.env.JWT_REFRESH_SECRET;
+    if (!secret) throw new Error("JWT_REFRESH_SECRET is not defined in env configuration");
+
     decodedToken = jwt.verify(
       incomingRefreshToken,
-      process.env.REFRESH_TOKEN_SECRET!
+      secret
     ) as CustomJwtPayload;
   } catch (error) {
     throw new AppError("Refresh token is invalid or expired", 401);
   }
 
-  const user = await User.findById(decodedToken._id);
+  // Double check your payload field name here too! 
+  // If your generation used { id: user._id }, decode it via decodedToken.id 
+  const user = await User.findById(decodedToken.id || decodedToken._id);
   if (!user) {
     throw new AppError("Invalid refresh token user", 401);
   }
@@ -119,23 +124,21 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     throw new AppError("Refresh token is expired or already used", 401);
   }
 
-  // Unified token generation using your imported utility function
   const accessToken = generateAccessToken(user);
 
+  // ◄ CRITICAL FOR FRONTEND: Your frontend types expect 'user' object in AuthResponse!
+  // If you don't return it here, the frontend state might think refresh failed.
   res.status(200).json({
     success: true,
-    message: "Access token refreshed successfully",
     accessToken,
+    message: "Access token refreshed successfully",
     user: {
-      _id: user._id,
+      id: user._id,
       name: user.name,
       email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    },
+    }
   });
 });
-
 
 // Add this export to src/controllers/auth.controller.ts
 

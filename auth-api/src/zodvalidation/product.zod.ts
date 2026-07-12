@@ -14,7 +14,7 @@ export const productValidation = z
       .min(10, "Description must be at least 10 characters")
       .max(1000, "Description cannot exceed 1000 characters"),
 
-    // ✅ FIX 1: Use z.coerce.number to turn the string '50' into a real number
+    //  FIX 1: Use z.coerce.number to turn the string '50' into a real number
     price: z.coerce
       .number({
         required_error: "Price is required",
@@ -22,7 +22,7 @@ export const productValidation = z
       })
       .positive("Price must be greater than 0"),
 
-    // ✅ FIX 2: Preprocess instead of z.coerce.boolean 
+    //  FIX 2: Preprocess instead of z.coerce.boolean 
     // (JavaScript converts the string "false" to TRUE, so we manually map it here)
     inStock: z
       .preprocess((val) => {
@@ -40,7 +40,7 @@ export const productValidation = z
       .max(50, "Category cannot exceed 50 characters")
       .optional(),
 
-    // ✅ FIX 3: Preprocess tags to handle both single items and comma-separated text
+    //  FIX 3: Preprocess tags to handle both single items and comma-separated text
     tags: z
       .preprocess((val) => {
         if (typeof val === "string") {

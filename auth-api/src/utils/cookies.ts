@@ -2,8 +2,8 @@ import { Response } from "express";
 
 export const refreshTokenCookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict" as const,
+  secure: false, // Set to false for development over http://localhost
+  sameSite: "lax" as const, // Changed from "strict" to "lax" for better development experience
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 

@@ -83,6 +83,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Session restoration on page refresh
   useEffect(() => {
     const restoreSession = async () => {
+      // Only try to restore if we don't already have an access token
+      if (accessToken) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await authService.refreshToken();
         const { accessToken: newToken, user: newUser } = res as AuthResponse;
@@ -97,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     restoreSession();
-  }, [setAccessToken]);
+  }, [setAccessToken, accessToken]);
 
   const logout = useCallback(async () => {
     try {
