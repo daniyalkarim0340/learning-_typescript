@@ -3,10 +3,11 @@ import { RootLayout, DashboardLayout } from "./layouts/RootLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import Products  from "./pages/products";
 
 // Temporary test dashboard elements
 const Overview = () => <div className="text-zinc-100"><h1 className="text-3xl font-extrabold tracking-tight">System Status: Active</h1></div>;
-const Products = () => <div className="text-zinc-100"><h1 className="text-3xl font-extrabold tracking-tight">Inventory Architecture</h1></div>;
+
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               { path: "", element: <Overview /> },
-              { path: "products", element: <Products /> }
+              { path: "products", element: <Products/> }
             ]
           }
         ]
