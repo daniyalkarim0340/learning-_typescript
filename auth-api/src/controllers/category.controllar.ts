@@ -56,3 +56,23 @@ export const deleteCategory = AsyncHandler(async (req: Request, res: Response, n
     message: "Category deleted successfully",
   });
 });
+
+
+// @desc    Get all categories
+// @route   GET /api/categories
+// @access  Public (or Private depending on your app)
+export const getAllCategories = AsyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  // 1. Fetch all categories from the database
+  const categories = await Category.find();
+
+  if (!categories || categories.length === 0) {
+    return next(new AppError("No categories found", 404));
+  }
+
+  // 3. Return the categories array
+  res.status(200).json({
+    success: true,
+    results: categories.length,
+    categories,
+  });
+});
