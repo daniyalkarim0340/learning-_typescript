@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"; // Added NextFunction type
+import { Request, Response, NextFunction } from "express";
 import AsyncHandler from "express-async-handler";
 import { Category } from "../models/category.model.js";
 import AppError from "../handle/appError.js";
@@ -14,7 +14,7 @@ export const createCategory = AsyncHandler(async (req: Request, res: Response, n
     return next(new AppError("Both category name and description are required", 400));
   }
 
-  // 2. Prevent duplicate categories
+  // 2. Prevent duplicate categories (case-insensitive)
   const existingCategory = await Category.findOne({
     name: { $regex: `^${name.trim()}$`, $options: "i" },
   });
@@ -36,43 +36,55 @@ export const createCategory = AsyncHandler(async (req: Request, res: Response, n
   });
 });
 
-// @desc    Delete a category
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
-export const deleteCategory = AsyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { id } = req.params;
-
-  // 1. Find and delete the category
-  const category = await Category.findByIdAndDelete(id);
-
-  // 2. Check if category existed
-  if (!category) {
-    return next(new AppError("No category found with that ID.", 404));
-  }
-
-  // 3. Return success response
-  res.status(200).json({
-    success: true,
-    message: "Category deleted successfully",
-  });
-});
-
-
 // @desc    Get all categories
 // @route   GET /api/categories
-// @access  Public (or Private depending on your app)
+// @access  Public
 export const getAllCategories = AsyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  // 1. Fetch all categories from the database
   const categories = await Category.find();
 
   if (!categories || categories.length === 0) {
     return next(new AppError("No categories found", 404));
   }
 
-  // 3. Return the categories array
   res.status(200).json({
     success: true,
     results: categories.length,
     categories,
+  });
+});
+
+// @desc    Get a single category by ID
+// @route   GET /api/categories/:id
+// @access  Public
+export const getCategoryById = AsyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  const category = await Category.findById(id);
+
+  if (!category) {
+    return next(new AppError("No category found with that ID", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    category,
+  });
+});
+
+// @desc    Delete a category
+// @route   DELETE /api/categories/:id
+// @access  Private/Admin
+export const deleteCategory = AsyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+
+  const category = await Category.findByIdAndDelete(id);
+
+  if (!category) {
+    return next(new AppError("No category found with that ID.", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Category deleted successfully",
   });
 });
